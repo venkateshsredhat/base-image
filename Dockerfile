@@ -1,0 +1,15 @@
+FROM registry.access.redhat.com/ubi9/ubi:latest
+USER root
+RUN cat /etc/dnf/dnf.conf || true
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
+RUN dnf install -y https://packages.microsoft.com/config/rhel/9.0/packages-microsoft-prod.rpm
+RUN mkdir -p /etc/yum.repos.art/ci/ && ln -s /etc/yum.repos.d/microsoft-prod.repo /etc/yum.repos.art/ci/
+RUN dnf install -y azure-cli libicu make golang git
+RUN mkdir -p /usr/local/bin
+ENV PATH="/usr/local/bin:/usr/bin:$PATH"
+RUN az bicep install && mv /root/.azure/bin/bicep /usr/local/bin
+RUN az aks install-cli --install-location /usr/local/bin/kubectl --kubelogin-install-location /usr/local/bin/kubelogin
+RUN curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz" && \
+    tar -xzf openshift-client-linux.tar.gz -C /usr/local/bin oc && \
+    rm openshift-client-linux.tar.gz && \
+    chmod +x /usr/local/bin/oc    
