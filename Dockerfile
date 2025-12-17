@@ -4,7 +4,7 @@ RUN cat /etc/dnf/dnf.conf || true
 RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
 RUN dnf install -y https://packages.microsoft.com/config/rhel/9.0/packages-microsoft-prod.rpm
 RUN mkdir -p /etc/yum.repos.art/ci/ && ln -s /etc/yum.repos.d/microsoft-prod.repo /etc/yum.repos.art/ci/
-RUN dnf install -y azure-cli libicu make git
+RUN dnf install -y azure-cli libicu make git procps-ng
 # Install Go 1.24.4 specifically
 RUN curl -L https://go.dev/dl/go1.24.4.linux-amd64.tar.gz | tar -xzf - -C /usr/local && \
     ln -s /usr/local/go/bin/go /usr/local/bin/go && \
